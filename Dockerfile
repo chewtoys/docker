@@ -1,8 +1,7 @@
-ARG ANONADDY_VERSION=0.7.3
+ARG ANONADDY_VERSION=0.7.5
 
 FROM crazymax/yasu:latest AS yasu
 FROM crazymax/alpine-s6:3.13-2.2.0.3
-LABEL maintainer="CrazyMax"
 
 COPY --from=yasu / /
 RUN apk --update --no-cache add \
@@ -29,7 +28,6 @@ RUN apk --update --no-cache add \
     php7-gd \
     php7-gmp \
     php7-iconv \
-    php7-imagick \
     php7-intl \
     php7-json \
     php7-mailparse \
@@ -37,6 +35,7 @@ RUN apk --update --no-cache add \
     php7-openssl \
     php7-pdo \
     php7-pdo_mysql \
+    php7-pecl-imagick \
     php7-phar \
     php7-redis \
     php7-session \
@@ -53,7 +52,7 @@ RUN apk --update --no-cache add \
     shadow \
     tar \
     tzdata \
-  && apk --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing add \
+  && apk --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community add \
     opendmarc \
     opendmarc-libs \
   && apk --update --no-cache add -t build-dependencies \

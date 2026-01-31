@@ -22,15 +22,20 @@ on:
 
 jobs:
   build:
-    uses: crazy-max/.github/.github/workflows/bake-distribute-mp.yml@260f9dc454be47686f6a3ecc777beea64d104f41
+    uses: docker/github-builder/.github/workflows/bake.yml@v1
     permissions:
-      # same as global permissions
-      contents: read
+      contents: read # same as global permissions
+      id-token: write # for signing attestation(s) with GitHub OIDC Token
     with:
+      setup-qemu: true
       target: image-all
+      cache: true
+      cache-scope: image
+      output: image
       push: ${{ github.event_name != 'pull_request' }}
       set-meta-labels: true
-      meta-image: anonaddy/anonaddy
+      meta-images: |
+        anonaddy/anonaddy
       meta-tags: |
         type=match,pattern=(.*)-r,group=1
         type=ref,event=pr
@@ -40,5 +45,7 @@ jobs:
         org.opencontainers.image.description=Anonymous Email Forwarding
         org.opencontainers.image.vendor=CrazyMax
     secrets:
-      login-username: ${{ secrets.DOCKER_USERNAME }}
-      login-password: ${{ secrets.DOCKER_PASSWORD }}
+      registry-auths: |
+        - registry: docker.io
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
